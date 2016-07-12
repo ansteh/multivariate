@@ -7,6 +7,7 @@ from discrete.transformation import test
 data = ps.read_csv("WIKI-FB.csv", sep = ',')
 #df = ps.DataFrame(data)
 #print data.corr()
+#print np.nan_to_num(np.array([[np.nan, np.nan], [np.nan, np.nan]], dtype=np.float64))
 
 matrix = data.as_matrix()
 matrix = matrix[:, 1:]
