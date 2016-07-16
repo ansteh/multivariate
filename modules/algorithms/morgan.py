@@ -5,10 +5,6 @@ def morgan(C):
     A = np.zeros((dim, dim))
     A[:, 0] = C[:, 0] / np.sqrt(C[0, 0])
 
-    #print C
-    #print C[:, 0]
-    #print C[:, 0] / np.sqrt(C[0, 0])
-
     for j in np.arange(1, dim):
         A[j, j] = np.sqrt(C[j, j] - np.sum(A[j, :j] * A[j, :j]))
         for i in np.arange(j+1, dim):
