@@ -8,6 +8,7 @@ from analysis.definite import isPositiveDefinite
 from discrete.transformation import test
 #from algorithms.morgan import morgan
 import tests.morgan as morgan
+import tests.generator as generator
 
 data = ps.read_csv("resources/WIKI-FB.csv", sep = ',')
 #data = ps.read_csv("apple-tree.csv", sep = ',')
@@ -28,4 +29,5 @@ matrix = np.array(matrix, dtype=np.float64)
 def testMorgan():
     morgan.testbed()
 
-testMorgan()
+#testMorgan()
+generator.testNormalDistributedGenerator();

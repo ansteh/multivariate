@@ -27,5 +27,5 @@ def testbed():
     print np.dot(A, A.T)
     #print np.subtract(C, np.dot(A, A.T))
     #print C == np.dot(A, A.T)
-    print np.all(C - np.dot(A, A.T) < 1e-6)
+    #print np.all(C - np.dot(A, A.T) < 1e-6)
     return A
