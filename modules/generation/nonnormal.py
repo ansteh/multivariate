@@ -18,7 +18,7 @@ def simulate(data, factors=0, maxtrials=5, multiplier=1, seed=0):
     trialsWithoutImprovement = 0
 
     #apply distribution from supplied data
-    distribution = simulated.copy()
+    distribution = data.copy()
     targetCorr = corr(data.T)
     intermidiateCorr = targetCorr.copy()
     #print data.shape
@@ -32,5 +32,19 @@ def simulate(data, factors=0, maxtrials=5, multiplier=1, seed=0):
 
         for i in range(0, 100):
             for j in range(0, dim):
-                randomData[:, j] = np.random.shuffle(distribution[:, j])
+                randomData[:, j] = np.random.permutation(distribution[:, j])
             eigvalsRandom[i, :] = np.linalg.eigvals(corr(randomData.T))
+        eigvalsRandom = np.mean(eigvalsRandom, axis=0)
+        factors = max(1, np.sum(eigvalsObserved > eigvalsRandom))
+
+    #steps 5,6
+    SharedComp = np.random.normal(0, 1, (n, factors))
+    UniqueComp = np.random.normal(0, 1, (n, dim))
+    SharedLoad = np.zeros((dim, factors))
+    UniqueLoad = np.zeros(dim)
+
+    while trialsWithoutImprovement < maxtrials:
+        iteration += 1
+
+        #steps 7,8
+        trialsWithoutImprovement += 1
