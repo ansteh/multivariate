@@ -4,6 +4,7 @@ import os, sys
 sys.path.append('../../modules/')
 
 import generation.normal as generator
+import generation.nonnormal as nonnormalGenerator
 import analysis.deviation as deviation
 from analysis.covariance import cov
 from analysis.correlation import corr
@@ -24,3 +25,14 @@ def testNormalDistributedGenerator():
     print deviation.conforms(mean(matrix), mean(simulated.T), threshold)
     print deviation.conforms(cov(matrix), cov(simulated.T), 1e-01)
     print deviation.disparity(cov(matrix), cov(simulated.T))
+
+def getNonNormalDistrubutedData():
+    data = ps.read_csv(os.path.join(os.path.dirname(__file__), "../resources/WIKI-FB.csv"), sep = ',')
+    matrix = data.as_matrix()
+    matrix = matrix[:, 1:]
+    matrix = np.array(matrix, dtype=np.float64)
+    return matrix
+
+def testNonNormalDistributedGenerator():
+    data = getNonNormalDistrubutedData()
+    nonnormalGenerator.simulate(data)

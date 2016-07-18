@@ -28,6 +28,7 @@ matrix = np.array(matrix, dtype=np.float64)
 
 def testMorgan():
     morgan.testbed()
-
 #testMorgan()
-generator.testNormalDistributedGenerator();
+
+#generator.testNormalDistributedGenerator();
+generator.testNonNormalDistributedGenerator();
