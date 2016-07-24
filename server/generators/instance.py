@@ -32,6 +32,3 @@ class Generator():
             return generation.normal.simulate(self.matrix, 1000)
         else:
             return generation.nonnormal.simulate(self.matrix.T, 1000)
-    #threshold = 1e-6
-    #print 'symmetric:', isSymmetric(C, threshold)
-    #print 'positive definite:', isPositiveDefinite(C)
