@@ -36,6 +36,6 @@ def getNonNormalDistrubutedData():
 def testNonNormalDistributedGenerator():
     data = getNonNormalDistrubutedData()
     simulated = nonnormalGenerator.simulate(data)
-    print simulated.shape
-    print corr(data) - corr(simulated)
+    #print simulated.shape
+    #print corr(data) - corr(simulated)
     return simulated

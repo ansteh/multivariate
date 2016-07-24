@@ -14,9 +14,13 @@ import paho.mqtt.client as mqtt
 app = Flask(__name__)
 socketio = SocketIO(app)
 
-@app.route('/')
-def index():
-    return np.array_str(generator.testNonNormalDistributedGenerator())
+# def index(path):
+#     return np.array_str(generator.testNonNormalDistributedGenerator())
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def catch_url_generator_request(path):
+    return 'You want path: %s' % path
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)
