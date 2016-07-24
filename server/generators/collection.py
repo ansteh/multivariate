@@ -1,19 +1,21 @@
-import fs
+import fs, json
+import numpy as np
 from instance import Generator
 
 blueprints = fs.get_blueprints()
-instance = blueprints[0]
-Generator(instance)
 
-def get_instance():
-    return instance
+generators = map(lambda blueprint: Generator(blueprint), fs.get_blueprints())
 
-def find_print_by_url(url=""):
+def find_generator_by_url(url=""):
     try:
-        return next(blueprint for blueprint in blueprints if blueprint['url'] == url)
+        return next(generator for generator in generators if generator.url == url)
     except StopIteration:
         return None
 
 def handle(url):
-    blueprint = find_print_by_url(url)
-    return url
+    generator = find_generator_by_url(url)
+    if(generator is None):
+        return 'no generator match for url!'
+    else:
+        return json.dumps(generator.simulate().tolist(), separators=(',', ':'))
+        #return np.array_str(generator.simulate())
