@@ -1,4 +1,5 @@
 {
+  "url": "generate/apple/data",
   "resource": {
     "csv": "apple-tree.csv"
   }
