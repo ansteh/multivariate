@@ -31,4 +31,5 @@ def testMorgan():
 #testMorgan()
 
 #generator.testNormalDistributedGenerator();
-generator.testNonNormalDistributedGenerator();
+#generator.testNonNormalDistributedGenerator();
+generator.testFleishmanGenerator();

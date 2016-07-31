@@ -9,6 +9,7 @@ import analysis.deviation as deviation
 from analysis.covariance import cov
 from analysis.correlation import corr
 from analysis.mean import mean
+import algorithms.fleishman_multivariate as fm
 
 def getNormalDistrubutedData():
     data = ps.read_csv(os.path.join(os.path.dirname(__file__), "../resources/apple-tree.csv"), sep = ',')
@@ -36,6 +37,11 @@ def getNonNormalDistrubutedData():
 def testNonNormalDistributedGenerator():
     data = getNonNormalDistrubutedData()
     simulated = nonnormalGenerator.simulate(data)
-    #print simulated.shape
-    #print corr(data) - corr(simulated)
+    print simulated.shape
+    print corr(data) - corr(simulated)
     return simulated
+
+def testFleishmanGenerator():
+    data = getNormalDistrubutedData()
+    Sample = fm.sample_from_matrix(data)
+    print Sample
