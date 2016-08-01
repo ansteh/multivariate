@@ -27,6 +27,13 @@ def get_pdf_from_column(column):
 #get_pdf_from_column(data[0])
 
 pdf = Pdf(data[0])
+
+print 3.3, pdf.probability(3.3)
+print pdf.probability(6.8)
 print pdf.probability(3.4)
 print pdf.probability(4.40)
 print pdf.probability(6.5)
+print 3.3, 3.4, pdf.probability(3.3, 3.4)
+print 3.3, 3.65, pdf.probability(3.3, 3.65)
+print 3.4, 6.5, pdf.probability(3.4, 6.5)
+print 3.3, 6.8, pdf.probability(3.3, 6.8)

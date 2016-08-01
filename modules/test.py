@@ -30,6 +30,7 @@ def testMorgan():
     morgan.testbed()
 #testMorgan()
 
-#generator.testNormalDistributedGenerator();
-#generator.testNonNormalDistributedGenerator();
-generator.testFleishmanGenerator();
+#generator.testNormalDistributedGenerator()
+#generator.testNonNormalDistributedGenerator()
+#generator.testFleishmanGenerator()
+generator.testArbitrarySampling()

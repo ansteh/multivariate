@@ -10,6 +10,7 @@ from analysis.covariance import cov
 from analysis.correlation import corr
 from analysis.mean import mean
 import algorithms.fleishman_multivariate as fm
+from sampling.arbitrary import Sampling
 
 def getNormalDistrubutedData():
     data = ps.read_csv(os.path.join(os.path.dirname(__file__), "../resources/apple-tree.csv"), sep = ',')
@@ -45,3 +46,10 @@ def testFleishmanGenerator():
     data = getNormalDistrubutedData()
     Sample = fm.sample_from_matrix(data)
     print Sample
+
+def testArbitrarySampling():
+    data = getNormalDistrubutedData()
+    sampler = Sampling(data[0])
+    print data[0]
+    print sampler.next()
+    print sampler.next(10)
