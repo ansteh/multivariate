@@ -17,15 +17,6 @@ from scipy.interpolate import UnivariateSpline
 from matplotlib import pyplot as plt
 from analysis.pdf import Pdf
 
-def get_pdf_from_column(column):
-    print column
-    n = column.size
-    p, x = np.histogram(column, bins=n)
-    #print bins[1] - bins[0]
-    print p, x
-
-#get_pdf_from_column(data[0])
-
 pdf = Pdf(data[0])
 
 print 3.3, pdf.probability(3.3)
@@ -33,7 +24,13 @@ print pdf.probability(6.8)
 print pdf.probability(3.4)
 print pdf.probability(4.40)
 print pdf.probability(6.5)
-print 3.3, 3.4, pdf.probability(3.3, 3.4)
-print 3.3, 3.65, pdf.probability(3.3, 3.65)
-print 3.4, 6.5, pdf.probability(3.4, 6.5)
-print 3.3, 6.8, pdf.probability(3.3, 6.8)
+print 3.3, 3.3, '=', pdf.probability(3.3, 3.3)
+print 3.3, 3.4, '=', pdf.probability(3.3, 3.4)
+print 3.4, 3.5, '=', pdf.probability(3.4, 3.5)
+print 3.3, 3.65, '=', pdf.probability(3.3, 3.65)
+print 3.4, 6.5, '=', pdf.probability(3.4, 6.5)
+print 3.4, 6.3, '=', pdf.probability(3.4, 6.3)
+print 3.3, 6.8, '=', pdf.probability(3.3, 6.8)
+print 5.2, 6.8, '=', pdf.probability(5.2, 6.8)
+print 0, 10, '=', pdf.probability(0, 10)
+#print 6, 4, '=', pdf.probability(6, 4)

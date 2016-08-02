@@ -33,4 +33,5 @@ def testMorgan():
 #generator.testNormalDistributedGenerator()
 #generator.testNonNormalDistributedGenerator()
 #generator.testFleishmanGenerator()
-generator.testArbitrarySampling()
+#generator.testArbitrarySampling()
+generator.testUnivariateMetropolis()

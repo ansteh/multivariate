@@ -6,7 +6,10 @@ class Pdf():
         self.n = column.size
         self.p, self.x = np.histogram(self.column, bins=self.n)
         self.bin_width = self.x[1]-self.x[0]
-        print self.p, self.x
+        self.first = self.x[0]
+        self.last = self.x[self.x.size-1]
+
+        #print self.p, self.x
 
     def probability(self, a, b=None):
         if(b is None):
@@ -25,13 +28,16 @@ class Pdf():
             index = self.getIntegralEndIndex(a)
             return self.p[index]*self.bin_width
         else:
-            # start = self.getIntegralEndIndex(a)
-            # end = self.getIntegralEndIndex(b)
+            if(a < self.first):
+                a = self.first
+
+            if(b > self.last):
+                b = self.last
+
+            a = self.x[len(np.where(self.x <= a)[0])-1]
             start = self.x[np.where(self.x < a)].size
-            end = self.x[np.where(self.x < b)].size
-            print start, end
+            end = self.x[np.where(self.x <= b)].size
             return self.bin_width * np.sum(self.p[start:end])
-            # return self.p[start]*(self.x[end]-self.x[start])
 
 
     def getIntegralEndIndex(self, value):
