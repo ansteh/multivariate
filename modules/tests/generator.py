@@ -72,7 +72,7 @@ def testUnivariateMetropolisWithComparison():
 
     for i in range(100):
         metropolis = UnivariateMetropolis(slicedData)
-        N = 1000
+        N = 100
         sampled = metropolis.sample(N)
         sampler = Sampling(slicedData)
         simpleSampling = sampler.next(N)
