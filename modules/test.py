@@ -27,29 +27,31 @@ matrix = np.array(matrix, dtype=np.float64)
 #print cov(matrix)
 #print corr(matrix)
 
-def testMorgan():
-    morgan.testbed()
-#testMorgan()
-
-start_time = time.time()
-generator.testNonNormalDistributedGenerator()
-elapsed_time = time.time() - start_time
-print elapsed_time
-
-k = 5
-np.random.seed(1)
-true_std = np.random.randn(k)
-true_mean = np.random.randn(k)
-true_cov = np.eye(k) * np.outer(true_std, true_std)
-n = 10000
-
-np.random.seed(1)
-vals = np.random.multivariate_normal(true_mean, true_cov, n)
-
-print true_cov
-print vals.shape, vals[0]
 #generator.testNormalDistributedGenerator()
 #generator.testNonNormalDistributedGenerator()
 #generator.testFleishmanGenerator()
 #generator.testArbitrarySampling()
 #generator.testUnivariateMetropolisWithComparison()
+generator.testNormalVsIterativeGeneration()
+
+def testMorgan():
+    morgan.testbed()
+#testMorgan()
+
+# start_time = time.time()
+# generator.testNonNormalDistributedGenerator()
+# elapsed_time = time.time() - start_time
+# print elapsed_time
+#
+# k = 5
+# np.random.seed(1)
+# true_std = np.random.randn(k)
+# true_mean = np.random.randn(k)
+# true_cov = np.eye(k) * np.outer(true_std, true_std)
+# n = 10000
+#
+# np.random.seed(1)
+# vals = np.random.multivariate_normal(true_mean, true_cov, n)
+#
+# print true_cov
+# print vals.shape, vals[0]

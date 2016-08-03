@@ -23,6 +23,7 @@ def simulate(data, factors=0, maxtrials=5, multiplier=1, seed=0):
     distribution = data.copy()
     TargetCorr = corr(data.T)
     IntermidiateCorr = TargetCorr.copy()
+    BestCorr = IntermidiateCorr
     #print data.shape
     #print simulated.shape
     #print TargetCorr, TargetCorr.shape
@@ -110,7 +111,11 @@ def simulate(data, factors=0, maxtrials=5, multiplier=1, seed=0):
         else:
             trialsWithoutImprovement += 1
             CurrentMultiplier = multiplier * (0.5 ** trialsWithoutImprovement)
-            IntermidiateCorr = BestCorr + CurrentMultiplier * BestRes
+            try:
+                IntermidiateCorr = BestCorr + CurrentMultiplier * BestRes
+            except NameError:
+                BestRes = ResidualCorr
+                IntermidiateCorr = BestCorr + CurrentMultiplier * BestRes
 
     #Construct the data set with the lowest RMSR correlation (step 13)
     fa = FactorAnalysis()

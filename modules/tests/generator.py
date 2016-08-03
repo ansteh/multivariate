@@ -44,6 +44,26 @@ def testNonNormalDistributedGenerator():
     print corr(data) - corr(simulated)
     return simulated
 
+def testNormalVsIterativeGeneration():
+    matrix = getNormalDistrubutedData()
+    N = 10
+    normalSampled = generator.simulate(matrix, N)
+    iterativeSampled = nonnormalGenerator.simulate(matrix.T)
+    print normalSampled.shape
+    print iterativeSampled.shape
+
+    #print matrix, matrix[:, :2], cov(matrix[:, :2])
+    print cov(matrix[:, :5])
+
+    print cov(matrix)
+    print cov(normalSampled.T)
+    print cov(iterativeSampled.T)
+
+    threshold = 1
+    print deviation.conforms(mean(matrix), mean(normalSampled.T), threshold), deviation.conforms(mean(matrix), mean(iterativeSampled.T), threshold)
+    print deviation.conforms(cov(matrix), cov(normalSampled.T), 1e-01), deviation.conforms(cov(matrix), cov(iterativeSampled.T), 1e-01)
+    print deviation.conforms(corr(matrix), corr(normalSampled.T), threshold), deviation.conforms(corr(matrix), corr(iterativeSampled.T), threshold)
+
 def testFleishmanGenerator():
     data = getNormalDistrubutedData()
     Sample = fm.sample_from_matrix(data)

@@ -1,0 +1,12 @@
+{
+  "columns": [{
+    "name": "normal",
+    "numpy": {
+      "function": "normal",
+      "parameters": {
+        "loc": 1,
+        "scale": 1
+      }
+    }
+  }]
+}
