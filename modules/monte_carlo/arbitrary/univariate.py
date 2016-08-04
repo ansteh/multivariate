@@ -4,6 +4,8 @@ import os, sys
 sys.path.append('../../../modules/')
 
 import numpy as np
+import scipy
+
 from analysis.pdf import Pdf
 from sampling.arbitrary import Sampling
 

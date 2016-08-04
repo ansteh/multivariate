@@ -32,7 +32,8 @@ matrix = np.array(matrix, dtype=np.float64)
 #generator.testFleishmanGenerator()
 #generator.testArbitrarySampling()
 #generator.testUnivariateMetropolisWithComparison()
-generator.testNormalVsIterativeGeneration()
+#generator.testNormalVsIterativeGeneration()
+generator.testUnivariateMetropolis()
 
 def testMorgan():
     morgan.testbed()

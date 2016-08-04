@@ -76,6 +76,13 @@ def testArbitrarySampling():
     print sampler.next()
     print sampler.next(10)
 
+def testUnivariateMetropolis():
+    data = np.random.uniform(0, 1, 10000)
+    metropolis = UnivariateMetropolis(data)
+    sampled = metropolis.sample(100)
+    print sampled
+    print np.mean(data), np.mean(sampled)
+
 def testUnivariateMetropolisWithComparison():
     data = getNormalDistrubutedData()
     metropolis = UnivariateMetropolis(data[0])

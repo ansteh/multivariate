@@ -1,15 +1,18 @@
 import numpy as np
 import scipy
 import math
+import scipy.stats as stats
+from analysis.pdf import estimate_pdf
+from analysis.pdf import Pdf
 
 class Sampling():
     def __init__(self, columnsOptions):
         self.columns = columnsOptions
         # print self.create_integral_func_by("5*x")(0,1)
         # print self.create_integral_func_by("5*x")(-np.inf,1)
-        x = -np.inf
-        print eval('math.exp(2)')
-        print eval('np.exp(-x)')
+        # x = -np.inf
+        # print eval('math.exp(2)')
+        # print eval('np.exp(-x)')
 
     def execute(self, column, size=1):
         if(column.has_key('numpy')):
@@ -58,3 +61,52 @@ class IntegralSimulation():
             return self.tail + self.func(0,x)
         else:
             return self.tail - self.func(x,0)
+
+class Metropolis_Scipy_Random():
+    def __init__(self, name, parameters):
+        self.name = name
+        self.parameters = parameters
+        self.function = getattr(stats, self.name)
+        self.pdf = lambda x: self.function.pdf(x, **parameters)
+        self.rvs = lambda size: self.function.rvs(size=size, **parameters)
+
+    def sample(self, size=1):
+        samples = np.zeros(size)
+        last = self.rvs(1)
+
+        for i in range(size):
+            u = np.random.uniform()
+            x = self.rvs(1)
+
+            if(u < min(1, self.pdf(x) / self.pdf(last))):
+                last = x
+            samples[i] = last
+
+        return samples
+
+class Metropolis_Numpy_Random():
+    def __init__(self, name, parameters):
+        self.name = name
+        self.parameters = parameters
+        self.function = getattr(np.random, self.name)
+        self.pdf_estimator = Pdf(self.rvs(10000))
+
+    def rvs(self, size=1):
+        return self.function(size=size, **self.parameters)
+
+    def pdf(self, x):
+        return self.pdf_estimator.probability(x)
+
+    def sample(self, size=1):
+        samples = np.zeros(size)
+        last = self.rvs(1)
+
+        for i in range(size):
+            u = np.random.uniform()
+            x = self.rvs(1)
+
+            if(u < min(1, self.pdf(x) / self.pdf(last))):
+                last = x
+            samples[i] = last
+
+        return samples
