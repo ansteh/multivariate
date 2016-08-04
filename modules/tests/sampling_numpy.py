@@ -6,6 +6,8 @@ import schedule, time
 
 sys.path.append('../../modules/')
 
+import generation.nonnormal as nonnormalGenerator
+
 def load():
     with open("../resources/sampling_numpy.json") as json_file:
         return json.load(json_file)
@@ -16,11 +18,26 @@ options = load()
 columns = options['columns']
 sampler = Sampling(columns)
 
-def sample():
-    print sampler.execute(sampler.columns[0])
+def produceBlueprint():
+    sample = sampler.generate(100)
+    return {
+        'data': sample,
+        'cov': np.cov(sample),
+        'corr': np.corrcoef(sample)
+    }
 
-schedule.every(1).seconds.do(sample)
+blueprint = produceBlueprint()
+simulated = nonnormalGenerator.simulate(blueprint['data'].T)
+# print blueprint['corr'] - np.corrcoef(simulated.T)
+# print blueprint['cov'] - np.cov(simulated.T)
 
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+print simulated[:4]
+
+# def sample():
+#     print sampler.execute(sampler.columns[0])
+#
+# schedule.every(1).seconds.do(sample)
+#
+# while True:
+#     schedule.run_pending()
+#     time.sleep(1)

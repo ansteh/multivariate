@@ -1,4 +1,33 @@
 import numpy as np
+from scipy.interpolate import interp1d
+from statsmodels.distributions.empirical_distribution import ECDF
+
+def estimate_pdf(data):
+    return np.histogram(data, density=True)
+
+def sample_from(data, size=1):
+    """From StackOverflow https://people.duke.edu/~ccc14/sta-663/MonteCarlo.html"""
+    ecdf = ECDF(data)
+    inv_cdf = extrap1d(interp1d(ecdf.y, ecdf.x, bounds_error=False, assume_sorted=True))
+    return inv_cdf(np.random.uniform(0, 1, size))
+
+def extrap1d(interpolator):
+    """From StackOverflow http://bit.ly/1BjyRfk"""
+    xs = interpolator.x
+    ys = interpolator.y
+
+    def pointwise(x):
+        if x < xs[0]:
+            return ys[0]+(x-xs[0])*(ys[1]-ys[0])/(xs[1]-xs[0])
+        elif x > xs[-1]:
+            return ys[-1]+(x-xs[-1])*(ys[-1]-ys[-2])/(xs[-1]-xs[-2])
+        else:
+            return interpolator(x)
+
+    def ufunclike(xs):
+        return np.array(map(pointwise, np.array(xs)))
+
+    return ufunclike
 
 class Pdf():
     def __init__(self, column):

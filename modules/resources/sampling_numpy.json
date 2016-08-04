@@ -1,6 +1,6 @@
 {
   "columns": [{
-    "name": "normal",
+    "name": "normal_example",
     "numpy": {
       "function": "normal",
       "parameters": {
@@ -8,5 +8,16 @@
         "scale": 1
       }
     }
+  },{
+    "name": "poisson_example",
+    "numpy": {
+      "function": "poisson",
+      "parameters": {
+        "lam": 5
+      }
+    }
+  },{
+    "name": "arbitrary_pdf_example",
+    "arbitrary_pdf": "np.exp(-x)"
   }]
 }
