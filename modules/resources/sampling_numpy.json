@@ -1,23 +1,52 @@
 {
   "columns": [{
     "name": "normal_example",
-    "numpy": {
+    "mixture_representation": [{
+      "module": "scipy",
+      "function": "norm",
+      "parameters": {
+        "loc": 0,
+        "scale": 1
+      },
+      "mixture_p": 0.7
+    },{
+      "module": "scipy",
+      "function": "beta",
+      "parameters": {
+        "a": 1,
+        "b": 3,
+        "loc": 0,
+        "scale": 1
+      },
+      "mixture_p": 0.3
+    }]
+  },{
+    "name": "normal_example",
+    "mixture_representation": [{
+      "module": "numpy",
       "function": "normal",
       "parameters": {
         "loc": 1,
         "scale": 1
-      }
-    }
-  },{
-    "name": "poisson_example",
-    "numpy": {
+      },
+      "mixture_p": 0.7
+    },{
+      "module": "numpy",
       "function": "poisson",
       "parameters": {
         "lam": 5
-      }
-    }
+      },
+      "mixture_p": 0.3
+    }]
   },{
-    "name": "arbitrary_pdf_example",
-    "arbitrary_pdf": "np.exp(-x)"
+    "name": "poisson_example",
+    "mixture_representation": [{
+      "module": "numpy",
+      "function": "poisson",
+      "parameters": {
+        "lam": 5
+      },
+      "mixture_p": 1
+    }]
   }]
 }

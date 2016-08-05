@@ -16,7 +16,28 @@ from sampling.libraries import Sampling
 
 options = load()
 columns = options['columns']
-sampler = Sampling(columns)
+
+sampler = Sampling([
+    {
+        "name": "normal_example",
+        "numpy": {
+          "function": "normal",
+          "parameters": {
+            "loc": 1,
+            "scale": 1
+          }
+        }
+    },{
+        "name": "normal_example_second",
+        "numpy": {
+          "function": "normal",
+          "parameters": {
+            "loc": 1,
+            "scale": 1
+          }
+        }
+    }
+])
 
 def produceBlueprint():
     sample = sampler.generate(100)

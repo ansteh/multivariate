@@ -13,6 +13,7 @@ import algorithms.fleishman_multivariate as fm
 from sampling.arbitrary import Sampling
 from monte_carlo.arbitrary.univariate import Metropolis as UnivariateMetropolis
 from algorithms.fleishman_univariate import generate_fleishman_from_collection
+from algorithms.fleishman_multivariate import sample_from_matrix as fm_mv_from_matrix
 
 def getNormalDistrubutedData():
     data = ps.read_csv(os.path.join(os.path.dirname(__file__), "../resources/apple-tree.csv"), sep = ',')
@@ -83,12 +84,22 @@ def testUnivariateMetropolis():
     print sampled
     print np.mean(data), np.mean(sampled)
 
+def testMultivariateFleishman():
+    data = getNonNormalDistrubutedData()[:, 1:].T
+    sampled = fm_mv_from_matrix(data, 100)
+    print data.shape
+    print cov(data)
+    print sampled.shape
+    print cov(data).shape
+    print cov(sampled.T).shape
+    print deviation.disparity(cov(data), cov(sampled.T))
+
 def testUnivariateMetropolisWithComparison():
     data = getNormalDistrubutedData()
     metropolis = UnivariateMetropolis(data[0])
-    #print data[0]
-    #print metropolis.sample(10)
-    data = getNonNormalDistrubutedData()
+    # print data[0]
+    # print metropolis.sample(10)
+    # data = getNonNormalDistrubutedData()
     # print data.shape
     # print data[:, 1].size
 

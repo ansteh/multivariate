@@ -23,5 +23,5 @@ print(describe(data))
 sim = (generate_fleishman(-coeff[1],*coeff,N=10000))*std+mean
 print(describe(sim))
 
-result = generate_fleishman_from_collection(data, 100)
+result = generate_fleishman_from_collection(data, 1000)
 print describe(result), len(result)

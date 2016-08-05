@@ -62,16 +62,11 @@ class IntegralSimulation():
         else:
             return self.tail - self.func(x,0)
 
-class Metropolis_Scipy_Random():
-    def __init__(self, name, parameters):
-        self.name = name
-        self.parameters = parameters
-        self.function = getattr(stats, self.name)
-        self.pdf = lambda x: self.function.pdf(x, **parameters)
-        self.rvs = lambda size: self.function.rvs(size=size, **parameters)
+class Metropolis():
 
     def sample(self, size=1):
         samples = np.zeros(size)
+
         last = self.rvs(1)
 
         for i in range(size):
@@ -84,7 +79,15 @@ class Metropolis_Scipy_Random():
 
         return samples
 
-class Metropolis_Numpy_Random():
+class Metropolis_Scipy_Random(Metropolis):
+    def __init__(self, name, parameters):
+        self.name = name
+        self.parameters = parameters
+        self.function = getattr(stats, self.name)
+        self.pdf = lambda x: self.function.pdf(x, **parameters)
+        self.rvs = lambda size: self.function.rvs(size=size, **parameters)
+
+class Metropolis_Numpy_Random(Metropolis):
     def __init__(self, name, parameters):
         self.name = name
         self.parameters = parameters
@@ -97,16 +100,25 @@ class Metropolis_Numpy_Random():
     def pdf(self, x):
         return self.pdf_estimator.probability(x)
 
-    def sample(self, size=1):
-        samples = np.zeros(size)
-        last = self.rvs(1)
+class Metropolis_Mixture_Representation(Metropolis):
+    def __init__(self, columnOptions):
+        self.options = columnOptions
+        self.p_of_mixtures = map(lambda options: options['mixture_p'], self.options)
+        self.p_of_mixtures = np.array(self.p_of_mixtures)
+        self.mixtures = map(lambda options: self.create_metropolis_module(options), self.options)
 
-        for i in range(size):
-            u = np.random.uniform()
-            x = self.rvs(1)
+    def create_metropolis_module(self, representation):
+        if(representation['module'] == 'numpy'):
+            return Metropolis_Numpy_Random(representation['function'], representation['parameters'])
+        if(representation['module'] == 'scipy'):
+            return Metropolis_Scipy_Random(representation['function'], representation['parameters'])
 
-            if(u < min(1, self.pdf(x) / self.pdf(last))):
-                last = x
-            samples[i] = last
+    def rvs(self, size=1):
+        return np.sum(map(lambda mixture: mixture.rvs(1), self.mixtures))
 
-        return samples
+    def pdf(self, x):
+        pdfs = map(lambda mixture: mixture.pdf(x), self.mixtures)
+        return np.sum(self.p_of_mixtures * pdfs)
+
+# class Metropolis_Columns():
+#     def __init__(self, columnsOptions):
