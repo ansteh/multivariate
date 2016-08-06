@@ -32,8 +32,8 @@ def extrap1d(interpolator):
 class Pdf():
     def __init__(self, column):
         self.column = column
-        self.n = column.size
-        self.p, self.x = np.histogram(self.column, bins=self.n)
+        self.n = np.unique(self.column).size
+        self.p, self.x = np.histogram(self.column, bins=self.n, density=True)
         self.bin_width = self.x[1]-self.x[0]
         self.first = self.x[0]
         self.last = self.x[self.x.size-1]

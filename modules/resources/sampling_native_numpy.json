@@ -2,10 +2,11 @@
   "columns": [{
     "name": "normal_example",
     "mixture_representation": [{
-      "module": "numpy",
+      "module": "scipy",
       "function": "poisson",
       "parameters": {
-        "lam": 5
+        "loc": 0,
+        "mu": 5
       },
       "mixture_p": 1
     }]
