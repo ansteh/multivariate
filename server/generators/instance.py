@@ -1,5 +1,5 @@
 import os, sys
-sys.path.append('../modules/')
+sys.path.append('../../modules/')
 
 import pandas as ps
 import numpy as np
@@ -9,26 +9,55 @@ from analysis.symmetric import isSymmetric
 from analysis.definite import isPositiveDefinite
 import generators.fs as fs
 
-import generation
+import generation.normal as normal
+import generation.nonnormal as nonnormal
+
+#class Web_Interface():
 
 class Generator():
     def __init__(self, options):
         self.threshold = 1e-6
         self.options = options
         self.url = self.options['url']
+
+        self.generator_web_interface = self.options['generator']['web_interface']
+        self.listener_web_interface = self.options['listener']['web_interface']
+
         self.sample = self.get_sample_data()
         self.matrix = self.sample.as_matrix()
         self.matrix = self.matrix.T
         self.matrix = np.array(self.matrix, dtype=np.float64)
         self.C = cov(self.matrix)
-        print self.sample, self.C
+        # print self.sample, self.C
+        # print 'isSymmetric', isSymmetric(self.C, self.threshold)
+        # print normal.simulate(self.matrix, 1000)
+
+    def set_callback(self, callback):
+        self.callback = callback
+
+    def execute_callback(self, data):
+        if(hasattr(self, 'callback')):
+            self.callback(data)
+
+    def get_listener_url(self):
+        return self.options['listener']['domain']+'/'+self.url
+
+    def get_select_options(self):
+        return self.options['listener']['select_options']
+
+    def get_frequence_in_seconds(self):
+        return self.options['generator']['frequence']['value']
 
     def get_sample_data(self):
         return fs.get_csv_resource(self.options['resource']['csv'])
 
-
-    def simulate(self):
+    def simulate(self, size=1, select_options=None):
         if(isSymmetric(self.C, self.threshold) and isPositiveDefinite(self.C)):
-            return generation.normal.simulate(self.matrix, 1000)
+            data = normal.simulate(self.matrix, size)
         else:
-            return generation.nonnormal.simulate(self.matrix.T, 1000)
+            data = nonnormal.simulate(self.matrix.T, size)
+
+        if(hasattr(self, 'callback')):
+            self.callback(data)
+
+        return data

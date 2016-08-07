@@ -1,5 +1,19 @@
 {
   "url": "generate/apple/data",
+  "listener": {
+    "domain": "http://127.0.0.1:5001",
+    "web_interface": "rest",
+    "select_options": {
+      "limit": 100
+    }
+  },
+  "generator": {
+    "domain": "http://127.0.0.1:5000",
+    "web_interface": "rest",
+    "frequence": {
+      "value": 4
+    }
+  },
   "resource": {
     "csv": "apple-tree.csv"
   }

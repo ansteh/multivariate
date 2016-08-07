@@ -12,14 +12,27 @@ def find_generator_by_url(url=""):
     except StopIteration:
         return None
 
-def handle(action, url):
+def handle(action, url, select_options=None):
     generator = find_generator_by_url(url)
+
+    # url = generator.options['listener']['domain']+'/'+generator.url
+    # select_options = generator.options['listener']['select_options']
+    # limit = select_options['limit']
+
     if(action == 'generator'):
         if(generator is None):
             return 'no generator match for url!'
         else:
-            return json.dumps(generator.simulate().tolist(), separators=(',', ':'))
-            #return np.array_str(generator.simulate())
+            select_options = generator.options['listener']['select_options']
+            limit = select_options['limit']
+            samples = generator.simulate(limit, select_options)
+            return json.dumps(samples.tolist(), separators=(',', ':'))
 
     if(action == 'listener'):
-        return json.dumps({ 'answer': 'no'})
+        if(generator is None):
+            return 'no generator match for url!'
+        else:
+            select_options = generator.options['listener']['select_options']
+            limit = select_options['limit']
+            samples = generator.simulate(limit, select_options)
+            return json.dumps(samples.tolist(), separators=(',', ':'))
