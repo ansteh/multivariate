@@ -38,13 +38,33 @@ mean_sampled = np.mean(samples[:,1])
 mean_true = 0.7*scipy.stats.norm.mean(loc=0, scale=1)+0.3*scipy.stats.beta.mean(1, 3, scale=1, loc=0)
 print 'mean:', mean_true, mean_sampled, abs(mean_true - mean_sampled)/mean_true*100
 
-df = pd.DataFrame(samples, columns=["x", "y"])
-sns.jointplot(x="x", y="y", data=df)
+references = 2
+containers = map(lambda i: np.array([scipy.stats.poisson.rvs(mu=5, loc=0, size=N), 0.7*scipy.stats.norm.rvs(loc=0, scale=1, size=N)+0.3*scipy.stats.beta.rvs(1, 3, scale=1, loc=0, size=N)]).T, range(references))
 
-df = pd.DataFrame(np.array([scipy.stats.poisson.rvs(mu=5, loc=0, size=N), 0.7*scipy.stats.norm.rvs(loc=0, scale=1, size=N)+0.3*scipy.stats.beta.rvs(1, 3, scale=1, loc=0, size=N)]).T, columns=["x", "y"])
-sns.jointplot(x="x", y="y", data=df)
 
-df = pd.DataFrame(np.array([scipy.stats.poisson.rvs(mu=5, loc=0, size=N), 0.7*scipy.stats.norm.rvs(loc=0, scale=1, size=N)+0.3*scipy.stats.beta.rvs(1, 3, scale=1, loc=0, size=N)]).T, columns=["x", "y"])
-sns.jointplot(x="x", y="y", data=df)
+def plot(references, containers):
+    xlim = (np.min(samples[:, 0]), np.max(samples[:, 0]))
+    ylim = (np.min(samples[:, 1]), np.max(samples[:, 1]))
+    for i in range(references):
+        xlim = (min(xlim[0], np.min(containers[i][:, 0])), max(xlim[1], np.max(containers[i][:, 0])))
+        ylim = (min(ylim[0], np.min(containers[i][:, 1])), max(ylim[1], np.max(containers[i][:, 1])))
+
+    xlim = (xlim[0]-1, xlim[1]+1)
+    ylim = (ylim[0]-1, ylim[1]+1)
+
+    df = pd.DataFrame(samples, columns=["x", "y"])
+    sns.jointplot(x="x", y="y", data=df, xlim=xlim, ylim=ylim)
+
+    for i in range(references):
+        df = pd.DataFrame(containers[i], columns=["x", "y"])
+        sns.jointplot(x="x", y="y", data=df, xlim=xlim, ylim=ylim)
+
+plot(references, containers)
+
+# df = pd.DataFrame(np.array([scipy.stats.poisson.rvs(mu=5, loc=0, size=N), 0.7*scipy.stats.norm.rvs(loc=0, scale=1, size=N)+0.3*scipy.stats.beta.rvs(1, 3, scale=1, loc=0, size=N)]).T, columns=["x", "y"])
+# sns.jointplot(x="x", y="y", data=df)
+#
+# df = pd.DataFrame(np.array([scipy.stats.poisson.rvs(mu=5, loc=0, size=N), 0.7*scipy.stats.norm.rvs(loc=0, scale=1, size=N)+0.3*scipy.stats.beta.rvs(1, 3, scale=1, loc=0, size=N)]).T, columns=["x", "y"])
+# sns.jointplot(x="x", y="y", data=df)
 
 pylab.show()

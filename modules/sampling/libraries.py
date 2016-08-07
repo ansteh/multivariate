@@ -31,22 +31,43 @@ class Metropolis():
             u = np.random.uniform()
             x = self.rvs(1)
 
-            #if(u < min(1, self.pdf(x)*self.cdf(last) / self.pdf(last)*self.cdf(x))):
-            if(u < min(1, self.pdf(x) / self.pdf(last))):
+            # if(u < min(1, (self.probability(x)*self.probability(last, x)) / (self.probability(last)*self.probability(x, last)) )):
+            if(u < min(1, self.cdf(x) / self.cdf(last))):
                 last = x
 
             samples[i] = last
 
         return samples
 
+    def probability(self, a, b=None):
+        if(b is None):
+            return self.cdf(a)
+
+        if(a == b):
+            return self.cdf(a)
+
+        if(a < b):
+            return self.cdf(b)-self.cdf(a)
+        else:
+            return self.cdf(a)-self.cdf(b)
+
 class Metropolis_Scipy_Random(Metropolis):
     def __init__(self, name, parameters):
         self.name = name
         self.parameters = parameters
         self.function = getattr(stats, self.name)
-        self.pdf = lambda x: self.function.pdf(x, **parameters)
+        # self.pdf = lambda x: self.function.pdf(x, **parameters)
         self.rvs = lambda size: self.function.rvs(size=size, **parameters)
         self.cdf = lambda x: self.function.cdf(x, **parameters)
+
+    def probability(self, a, b):
+        if(a == b):
+            return self.cdf(a)
+
+        if(a < b):
+            return self.cdf(b)-self.cdf(a)
+        else:
+            return self.cdf(a)-self.cdf(b)
 
 class Metropolis_Numpy_Random(Metropolis):
     def __init__(self, name, parameters):
