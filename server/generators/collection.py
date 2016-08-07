@@ -12,10 +12,14 @@ def find_generator_by_url(url=""):
     except StopIteration:
         return None
 
-def handle(url):
+def handle(action, url):
     generator = find_generator_by_url(url)
-    if(generator is None):
-        return 'no generator match for url!'
-    else:
-        return json.dumps(generator.simulate().tolist(), separators=(',', ':'))
-        #return np.array_str(generator.simulate())
+    if(action == 'generator'):
+        if(generator is None):
+            return 'no generator match for url!'
+        else:
+            return json.dumps(generator.simulate().tolist(), separators=(',', ':'))
+            #return np.array_str(generator.simulate())
+
+    if(action == 'listener'):
+        return json.dumps({ 'answer': 'no'})

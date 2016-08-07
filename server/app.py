@@ -1,33 +1,36 @@
 import os, sys
 sys.path.append('../modules/')
+import json
 
-import pandas as ps
+import pandas as pd
 import numpy as np
-
-import generation.nonnormal as nonnormalGenerator
-import tests.generator as generator
 
 import generators.collection as generators
 
 from flask import Flask
+from flask import request
 from flask_socketio import SocketIO
 import paho.mqtt.client as mqtt
-
-#print generators.get_instance()
-#print generators.find_print_by_url('generate/apple/data') is None
-#print generators.find_print_by_url('generate/appata') is None
+import schedule, time
+from threading import Thread
 
 app = Flask(__name__)
 socketio = SocketIO(app)
 
-# def index(path):
-#     return np.array_str(generator.testNonNormalDistributedGenerator())
+host = "127.0.0.1"
+port = 5000
 
 @app.route('/', defaults={'url': ''})
-@app.route('/<path:url>')
+@app.route('/<path:url>', methods=['GET', 'POST'])
 def catch_url_generator_request(url):
-    print url
-    return generators.handle(url)
+    print 'method', request.method
+    if request.method == 'POST':
+        data = request.data
+        dataDict = json.loads(data)
+        print data
+        return json.dumps({'answer':'server send data', 'data': { 'set': [1,2,3], 'type': "a"}}, separators=(',', ':'))
+    else:
+        return generators.handle('generator', url)
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    socketio.run(app, debug=True, port=port, host=host)
