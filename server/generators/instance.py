@@ -1,7 +1,7 @@
 import os, sys
 sys.path.append('../../modules/')
 
-import pandas as ps
+import pandas as pd
 import numpy as np
 
 from analysis.covariance import cov
@@ -12,6 +12,12 @@ import generators.fs as fs
 import generation.normal as normal
 import generation.nonnormal as nonnormal
 from sampling.libraries import DatasetGenerator
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+sns.set(color_codes=True)
+plt.style.use('ggplot')
 
 import schedule, time
 
@@ -65,8 +71,14 @@ class Blueprint():
     def simulate(self, size=1, select_options=None):
         return self.produce_data(size, select_options)
 
-    # def produce_and_cache_data():
-    #     if(self.cache.size < self.cache_bench):
+    def plot(self, samples, columns=None):
+        if(columns is None):
+            df = pd.DataFrame(samples, columns=["x", "y"])
+            sns.jointplot(x="x", y="y", data=df)
+        else:
+            df = pd.DataFrame(samples, columns=[columns[0], columns[1]])
+            # sns.jointplot(x=names[0], y=names[1], data=df, xlim=xlim, ylim=ylim)
+            sns.jointplot(x=columns[0], y=columns[1], data=df)
 
 class Imitator(Blueprint):
     def __init__(self, options):
@@ -101,10 +113,14 @@ class Numpy_Datagenerator(Blueprint):
         Blueprint.__init__(self, options)
 
         self.columnOptions = self.options['resource']['columns']
-        self.generator = DatasetGenerator(self.columnOptions)
+
+        if('mv_probability' in options['resource'].keys()):
+            self.generator = DatasetGenerator(self.columnOptions, self.options['resource']['mv_probability'])
+        else:
+            self.generator = DatasetGenerator(self.columnOptions)
 
     def produce_data(self, size=1, select_options=None):
-        data = self.generator.rvs(size)
+        data = self.generator.sample(size)
 
         if(hasattr(self, 'callback')):
             self.callback(data)

@@ -1,4 +1,5 @@
 {
+  "probability": "np.sum(x)/(np.max(x)*3)",
   "columns": [{
     "name": "normal_example",
     "mixture_representation": [{

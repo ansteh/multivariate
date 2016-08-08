@@ -15,23 +15,16 @@
     }
   },
   "resource": {
+    "mv_probability": "(0 + abs(x[0]) - abs(x[0])) + np.sum(x)/(np.max(x)*3)",
     "columns": [{
-      "name": "numpy_poisson",
+      "name": "normal_example",
+      "uv_probability": "x/5",
       "mixture_representation": [{
-        "module": "numpy",
+        "module": "scipy",
         "function": "poisson",
         "parameters": {
-          "lam": 5
-        },
-        "mixture_p": 1
-      }]
-    },{
-      "name": "numpy_poisson",
-      "mixture_representation": [{
-        "module": "numpy",
-        "function": "poisson",
-        "parameters": {
-          "lam": 5
+          "loc": 0,
+          "mu": 5
         },
         "mixture_p": 1
       }]
@@ -55,17 +48,6 @@
           "scale": 1
         },
         "mixture_p": 0.3
-      }]
-    },{
-      "name": "column",
-      "mixture_representation": [{
-        "module": "scipy",
-        "function": "poisson",
-        "parameters": {
-          "loc": 0,
-          "mu": 12
-        },
-        "mixture_p": 1
       }]
     }]
   }

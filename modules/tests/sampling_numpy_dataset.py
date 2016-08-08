@@ -61,10 +61,4 @@ def plot(references, containers):
 
 plot(references, containers)
 
-# df = pd.DataFrame(np.array([scipy.stats.poisson.rvs(mu=5, loc=0, size=N), 0.7*scipy.stats.norm.rvs(loc=0, scale=1, size=N)+0.3*scipy.stats.beta.rvs(1, 3, scale=1, loc=0, size=N)]).T, columns=["x", "y"])
-# sns.jointplot(x="x", y="y", data=df)
-#
-# df = pd.DataFrame(np.array([scipy.stats.poisson.rvs(mu=5, loc=0, size=N), 0.7*scipy.stats.norm.rvs(loc=0, scale=1, size=N)+0.3*scipy.stats.beta.rvs(1, 3, scale=1, loc=0, size=N)]).T, columns=["x", "y"])
-# sns.jointplot(x="x", y="y", data=df)
-
 pylab.show()

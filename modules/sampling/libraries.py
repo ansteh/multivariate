@@ -8,7 +8,8 @@ from analysis.pdf import sample_from as sample_cdf_from
 
 class Metropolis():
     def sample(self, size=1, unique=False):
-        if(hasattr(self, 'mixtures') and self.all_native):
+        #print hasattr(self, 'mixtures'), self.all_native, (hasattr(self, 'probability') == False)
+        if(hasattr(self, 'mixtures') and self.all_native and (hasattr(self, 'target_probability') == False)):
             return self.rvs(size)
 
         if(unique):
@@ -23,6 +24,10 @@ class Metropolis():
         return samples[:size]
 
     def metropolis(self, size=1):
+        if(hasattr(self, 'target_probability') == False):
+            return self.rvs(size)
+
+        #print 'metropolis is used', self.probabilityStr
         samples = np.zeros(size)
 
         last = self.rvs(1)
@@ -31,34 +36,34 @@ class Metropolis():
             u = np.random.uniform()
             x = self.rvs(1)
 
+            #print self.target_probability(x), self.probability(last)
             # if(u < min(1, (self.probability(x)*self.probability(last, x)) / (self.probability(last)*self.probability(x, last)) )):
-            if(u < min(1, self.cdf(x) / self.cdf(last))):
+            if(u < min(1, self.target_probability(x) / self.probability(last))):
                 last = x
 
             samples[i] = last
 
         return samples
 
-    def probability(self, a, b=None):
-        if(b is None):
-            return self.cdf(a)
-
-        if(a == b):
-            return self.cdf(a)
-
-        if(a < b):
-            return self.cdf(b)-self.cdf(a)
-        else:
-            return self.cdf(a)-self.cdf(b)
-
 class Metropolis_Scipy_Random(Metropolis):
     def __init__(self, name, parameters):
         self.name = name
         self.parameters = parameters
         self.function = getattr(stats, self.name)
-        # self.pdf = lambda x: self.function.pdf(x, **parameters)
         self.rvs = lambda size: self.function.rvs(size=size, **parameters)
-        self.cdf = lambda x: self.function.cdf(x, **parameters)
+
+
+        #self.pdf = lambda x: self.function.pdf(x, **parameters)
+        if(hasattr(self.function, 'cdf')):
+            self.cdf = lambda x: self.function.cdf(x, **parameters)
+        else:
+            self.init_cdf(self.rvs(1000))
+
+    def init_cdf(data):
+        data_cdf = sample_cdf_from(data)
+        self.p, self.x = np.histogram(data_cdf, bins=data_cdf.size, density=True)
+        self.bin_width = self.x[1]-self.x[0]
+        self.min = self.x[0]
 
     def probability(self, a, b):
         if(a == b):
@@ -95,13 +100,26 @@ class Metropolis_Numpy_Random(Metropolis):
         index = len(np.where(self.x <= x)[0])
         return self.bin_width*self.p[:index]
 
+    def probability(self, a, b):
+        if(a == b):
+            return self.cdf(a)
+
+        if(a < b):
+            return self.cdf(b)-self.cdf(a)
+        else:
+            return self.cdf(a)-self.cdf(b)
+
 class Metropolis_Mixture_Representation(Metropolis):
-    def __init__(self, columnOptions):
+    def __init__(self, columnOptions, probabilityStr=None):
         self.options = columnOptions
         self.p_of_mixtures = map(lambda options: options['mixture_p'], self.options)
         self.p_of_mixtures = np.array(self.p_of_mixtures)
         self.mixtures = map(lambda options: self.create_metropolis_module(options), self.options)
         self.all_native = self.mixtures_are_native()
+
+        self.probabilityStr = probabilityStr
+        if((probabilityStr is None) == False):
+            self.target_probability = lambda x: eval(probabilityStr)
 
     def mixtures_are_native(self):
         instances = map(lambda mixture: isinstance(mixture, Metropolis_Numpy_Random) or isinstance(mixture, Metropolis_Scipy_Random), self.mixtures)
@@ -129,27 +147,58 @@ class Metropolis_Mixture_Representation(Metropolis):
         cdfs = map(lambda mixture: mixture.cdf(x), self.mixtures)
         return np.sum(self.p_of_mixtures * cdfs)
 
+    def probability(self, a, b=None):
+        if(b is None):
+            b = a
+
+        if(a == b):
+            return self.cdf(a)
+
+        if(a < b):
+            return self.cdf(b)-self.cdf(a)
+        else:
+            return self.cdf(a)-self.cdf(b)
+
 class Monte_Carlo():
 
     def sample(self, size=1):
+        if(hasattr(self, 'probability') == False):
+            return self.rvs(size)
+
+        candidates = self.rvs(size).tolist()
         samples = []
         count = 0
-        inc = 0
+
         while(count < size):
-            inc += 1
-            x = self.rvs()
-            #print inc, self.pdf(x)
-            if(np.random.uniform() < self.pdf(x)):
+            if(len(candidates) == 0):
+                candidates = self.rvs(size).tolist()
+
+            x = candidates[0]
+            candidates.remove(x)
+
+            #print 'mv probability', self.probability(x)
+            if(np.random.uniform() < self.probability(x)):
                 count += 1
                 samples.append(x)
+
         return np.array(samples)
 
 class DatasetGenerator(Monte_Carlo):
-    def __init__(self, columnsOptions):
+    def __init__(self, columnsOptions, probabilityStr=None):
         self.columnsOptions = columnsOptions
-        self.columns = map(lambda option: Metropolis_Mixture_Representation(option['mixture_representation']), self.columnsOptions)
+        self.columns = map(lambda option: self.create_column_representation(option), self.columnsOptions)
         self.n = len(self.columns)
         self.columns_range = range(len(self.columns))
+
+        if((probabilityStr is None) == False):
+            self.probability = lambda x: eval(probabilityStr)
+
+    def create_column_representation(self, columnOption):
+        mixtureOptions = columnOption['mixture_representation']
+        if('uv_probability' in columnOption.keys()):
+            return Metropolis_Mixture_Representation(mixtureOptions, columnOption['uv_probability'])
+        else:
+            return Metropolis_Mixture_Representation(mixtureOptions)
 
     def rvs(self, size=1):
         if(size == 1):
@@ -163,9 +212,9 @@ class DatasetGenerator(Monte_Carlo):
         # else:
         #     return np.array(map(lambda i: self.rvs(), range(size)))
 
-    def pdf(self, x):
-        pdfs = np.array(map(lambda i: self.columns[i].pdf(x[i]), self.columns_range))
-        return np.sum(pdfs/np.max(pdfs))/self.n
+    # def pdf(self, x):
+    #     pdfs = np.array(map(lambda i: self.columns[i].pdf(x[i]), self.columns_range))
+    #     return np.sum(pdfs/np.max(pdfs))/self.n
 
 class Native_Numpy_Sampling():
     def __init__(self, columnOptions):
