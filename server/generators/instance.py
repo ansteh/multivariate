@@ -71,6 +71,16 @@ class Blueprint():
     def simulate(self, size=1, select_options=None):
         return self.produce_data(size, select_options)
 
+    def has_web_socket(self):
+        if('locals' in self.options['generator'].keys()):
+            return len(filter(lambda x: x == "web_socket", self.options['generator']['locals'])) > 0
+        return False
+
+    def has_mqtt(self):
+        if('locals' in self.options['generator'].keys()):
+            return len(filter(lambda x: x == "mqtt", self.options['generator']['locals'])) > 0
+        return False
+
     def plot(self, samples, columns=None):
         if(columns is None):
             df = pd.DataFrame(samples, columns=["x", "y"])

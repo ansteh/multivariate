@@ -12,6 +12,12 @@ def find_generator_by_url(url=""):
     except StopIteration:
         return None
 
+def get_web_sockets():
+    return filter(lambda g: g.has_web_socket(), generators)
+
+def get_mqtts():
+    return filter(lambda g: g.has_mqtt(), generators)
+
 def handle(action, url, select_options=None):
     generator = find_generator_by_url(url)
 

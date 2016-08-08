@@ -12,7 +12,8 @@
     "web_interface": "rest",
     "frequence": {
       "value": 4
-    }
+    },
+    "locals": ["web_socket"]
   },
   "resource": {
     "mv_probability": "(0 + abs(x[0]) - abs(x[0])) + np.sum(x)/(np.max(x)*3)",
