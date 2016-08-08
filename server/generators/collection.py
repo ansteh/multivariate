@@ -1,10 +1,10 @@
 import fs, json
 import numpy as np
-from instance import Generator
+from instance import create
 
 blueprints = fs.get_blueprints()
 
-generators = map(lambda blueprint: Generator(blueprint), fs.get_blueprints())
+generators = map(lambda blueprint: create(blueprint), fs.get_blueprints())
 
 def find_generator_by_url(url=""):
     try:
@@ -14,10 +14,6 @@ def find_generator_by_url(url=""):
 
 def handle(action, url, select_options=None):
     generator = find_generator_by_url(url)
-
-    # url = generator.options['listener']['domain']+'/'+generator.url
-    # select_options = generator.options['listener']['select_options']
-    # limit = select_options['limit']
 
     if(action == 'generator'):
         if(generator is None):
